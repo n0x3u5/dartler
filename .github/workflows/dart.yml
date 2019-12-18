@@ -1,0 +1,29 @@
+name: Dart CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    container:
+      image:  google/dart:latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Cache
+      uses: actions/cache@v1.0.3
+      with:
+        # A directory to store and save the cache
+        path: ~/.pub-cache
+        # An explicit key for restoring and saving the cache
+        key: ${{ runner.os }}-dartler-${{ hashFiles('**/pubspec.lock') }}
+        # An ordered list of keys to use for restoring the cache if no cache hit occurred for key
+        restore-keys: |
+          ${{ runner.os }}-dartler-
+    - name: Install dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: pub get
+    - name: Run tests
+      run: pub run test
