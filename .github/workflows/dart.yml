@@ -24,6 +24,6 @@ jobs:
           ${{ runner.os }}-dartler-
     - name: Install dependencies
       if: steps.cache.outputs.cache-hit != 'true'
-      run: pub get
+      run: pub global activate mono_repo && pub global run mono_repo pub get
     - name: Run tests
       run: pub run test
